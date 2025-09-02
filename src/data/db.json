@@ -1,0 +1,110 @@
+[
+  {
+    "id": 1,
+    "name": "Beaf Meat",
+    "img": "/img/feature-8.jpg.webp",
+    "cost": "$400",
+    "color": "red",
+    "size": "large",
+    "category": "Meat"
+  },
+  {
+    "id": 2,
+    "name": "Vegetables",
+    "img": "/img/feature-1.jpg.webp",
+    "cost": "$250",
+    "color": "green",
+    "size": "medium",
+    "category": "vegetable"
+  },
+  {
+    "id": 3,
+    "name": "Fruit & Nut Gifts",
+    "img": "/img/feature-2.jpg.webp",
+    "cost": "$180",
+    "color": "blue",
+    "size": "small",
+    "category": "fruit"
+  },
+  {
+    "id": 4,
+    "name": "Fresh Berries",
+    "img": "/img/feature-3.jpg.webp",
+    "cost": "$300",
+    "color": "red",
+    "size": "small",
+    "category": "vegetable"
+  },
+  {
+    "id": 5,
+    "name": "Ocean Foods",
+    "img": "/img/feature-4.jpg.webp",
+    "cost": "$220",
+    "color": "blue",
+    "size": "medium",
+    "category": "Meat"
+  },
+  {
+    "id": 6,
+    "name": "Butter & Eggs",
+    "img": "/img/feature-5.jpg.webp",
+    "cost": "$150",
+    "color": "green",
+    "size": "small",
+    "category": "Meat"
+  },
+  {
+    "id": 7,
+    "name": "Fastfood",
+    "img": "/img/feature-6.jpg.webp",
+    "cost": "$200",
+    "color": "red",
+    "size": "medium",
+    "category": "Meat"
+  },
+  {
+    "id": 8,
+    "name": "Fresh Onion",
+    "img": "/img/feature-7.jpg.webp",
+    "cost": "$100",
+    "color": "blue",
+    "size": "small",
+    "category": "vegetable"
+  },
+  {
+    "id": 9,
+    "name": "Papayaya & Crisps",
+    "img": "/img/feature-1.jpg.webp",
+    "cost": "$170",
+    "color": "green",
+    "size": "medium",
+    "category": "Meat"
+  },
+  {
+    "id": 10,
+    "name": "Oatmeal",
+    "img": "/img/feature-2.jpg.webp",
+    "cost": "$130",
+    "color": "blue",
+    "size": "medium",
+    "category": "fruit"
+  },
+  {
+    "id": 11,
+    "name": "Fresh Bananas",
+    "img": "/img/feature-3.jpg.webp",
+    "cost": "$90",
+    "color": "blue",
+    "size": "medium",
+    "category": "fruit"
+  },
+    {
+    "id": 12,
+    "name": "Fresh Bananas",
+    "img": "/img/feature-3.jpg.webp",
+    "cost": "$90",
+    "color": "red",
+    "size": "medium",
+    "category": "fruit"
+  }
+]
