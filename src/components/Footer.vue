@@ -11,42 +11,8 @@
             <div class="footer-center">
                 <h3 class="txt-m">Useful Links</h3>
                 <ul>
-                    <li>
-                        <a href="#">About Us</a>
-                    </li>
-                    <li>
-                        <a href="#">About Our Shop</a>
-                    </li>
-                    <li>
-                        <a href="#">Secure Shopping</a>
-                    </li>
-                    <li>
-                        <a href="#">Delivery infomation</a>
-                    </li>
-                    <li>
-                        <a href="#">Privacy Policy</a>
-                    </li>
-                    <li>
-                        <a href="#">Our Sitemap</a>
-                    </li>
-                    <li>
-                        <a href="#">Who We Are</a>
-                    </li>
-                    <li>
-                        <a href="#">Our Services</a>
-                    </li>
-                    <li>
-                        <a href="#">Projects</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                    </li>
-                    <li>
-                        <a href="#">Innovation</a>
-                    </li>
-                    <li>
-                        <a href="#">Testimonials</a>
-                    </li>
+                    <li><router-link to="/Contact">Contact</router-link></li>
+                    <li><router-link to="/ProductList">shop</router-link></li>
                 </ul>
             </div>
             <div class="footer-right">
