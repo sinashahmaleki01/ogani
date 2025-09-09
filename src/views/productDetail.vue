@@ -38,17 +38,25 @@
 
         <!---------------|Quantity & Add to Cart|--------------->
         <div class="quantity-add">
-          <div class="quantity-box">
+          <div class="quantity-box" v-if="!isInCart">
             <button @click="decreaseQuantity">-</button>
             <span>{{ quantity }}</span>
             <button @click="increaseQuantity">+</button>
           </div>
 
-          <button class="add-to-cart" @click="addProductToCart">
+          <button v-if="!isInCart" class="add-to-cart" @click="addProductToCart">
             ADD TO CART
           </button>
+          <router-link v-else class="add-to-cart" :to="{ name: 'Cart' }">
+            GO TO CART
+          </router-link>
 
-          <button class="favorite"><i class="fa-regular fa-heart"></i></button>
+          <div v-if="isInCart" class="cancel-message" style="margin-left: 8px;">
+            <span class="txt-s">Added. Want to cancel your order?</span>
+            <button class="btn-gray" @click="cancelOrder" style="margin-left: 8px;">Cancel</button>
+          </div>
+
+         
         </div>
       </div>
     </section>
@@ -68,11 +76,23 @@ import productsData from '@/data/db.json';
 export default {
   name: 'ProductDetail',
   components: { Header, Footer },
+  props: {
+    id: {
+      type: [String, Number],
+      default: null
+    }
+  },
   data() {
     return { product: null, quantity: 1 };
   },
+  computed: {
+    isInCart() {
+      if (!this.product) return false;
+      return this.$store.state.cart.some(p => p.id === this.product.id);
+    }
+  },
   created() {
-    const id = this.$route.params.id.toString();
+    const id = (this.id || this.$route.params.id).toString();
     this.product = productsData.find(p => p.id.toString() === id) || null;
   },
   methods: {
@@ -80,7 +100,16 @@ export default {
     decreaseQuantity() { if (this.quantity > 1) this.quantity--; },
     addProductToCart() {
       if (!this.product) return;
+      if (this.isInCart) {
+        this.$router.push({ name: 'Cart' });
+        return;
+      }
       this.$store.commit('addToCart', { ...this.product, quantity: this.quantity });
+    },
+    cancelOrder() {
+      if (!this.product) return;
+      this.$store.commit('removeFromCart', this.product.id);
+      this.quantity = 1;
     }
   }
 }

@@ -13,6 +13,7 @@
                     <input type="button" value="SEARCH" class="btn">
                 </form>
                  <div class="icons">
+                  
                     <router-link to="/Cart" class="cart-icon">
                         <i class="fa-solid fa-cart-plus"></i>
                         <span v-if="cartCount > 0" class="cart-count">{{ cartCount }}</span>
@@ -105,9 +106,12 @@ export default {
         }
     },
     computed: {
-        ...mapState(['cart']),
+        ...mapState(['cart', 'wishlist']),
         cartCount() {
             return this.cart.reduce((acc, item) => acc + item.quantity, 0);
+        },
+        wishlistCount() {
+            return this.wishlist.length;
         }
     }
 }

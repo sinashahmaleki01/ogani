@@ -2,6 +2,7 @@
   <Header :show-categories="false" />
 
   <main class="cart">
+    <Notification :show="notify.show" :type="notify.type" :message="notify.message" />
     <!------------------|breadcrumb|------------------>
     <section class="breadcrumb">
       <div class="middle">
@@ -25,13 +26,13 @@
             <img :src="item.img" :alt="item.name" />
             <span>{{ item.name }}</span>
           </td>
-          <td class="txt-l">{{ item.cost }}</td>
+          <td class="txt-l">${{ discountedUnitPrice(item).toFixed(2) }}</td>
           <td>
             <button class="btn-gray" @click="decreaseQuantity(item)">-</button>
             <p class="btn-gray">{{ item.quantity }}</p>
             <button class="btn-gray" @click="increaseQuantity(item)">+</button>
           </td>
-          <td class="txt-l">${{ (parseFloat(item.cost.replace('$', '')) * item.quantity).toFixed(2) }}</td>
+          <td class="txt-l">${{ rowTotal(item).toFixed(2) }}</td>
           <td @click="removeItem(item)" class="remove-btn">&times;</td>
         </tr>
       </table>
@@ -79,31 +80,44 @@
 <script>
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
+import Notification from '@/components/notification.vue';
 import { mapState, mapMutations } from 'vuex';
 
 export default {
   name: 'Cart',
-  components: { Header, Footer },
+  components: { Header, Footer, Notification },
 
   data() {
     return {
       couponCode: '',
-      discountAmount: 0,
+      discountApplied: false,
+      notify: { show: false, type: 'success', message: '' }
     };
   },
 
   computed: {
     ...mapState(['cart']),
     subtotal() {
-      return this.cart.reduce((acc, item) => acc + parseFloat(item.cost.replace('$', '')) * item.quantity, 0);
+      return this.cart.reduce((acc, item) => acc + this.parsePrice(item.cost) * item.quantity, 0);
     },
     total() {
-      
-      return this.subtotal;
+      const factor = this.discountApplied ? 0.5 : 1;
+      return this.subtotal * factor;
     }
   },
   methods: {
     ...mapMutations(['addToCart', 'removeFromCart', 'updateQuantity']),
+    parsePrice(str) {
+      const n = parseFloat((str || '').toString().replace(/[^0-9.]/g, ''));
+      return isNaN(n) ? 0 : n;
+    },
+    discountedUnitPrice(item) {
+      const base = this.parsePrice(item.cost);
+      return this.discountApplied ? base * 0.5 : base;
+    },
+    rowTotal(item) {
+      return this.discountedUnitPrice(item) * item.quantity;
+    },
     increaseQuantity(item) {
       this.updateQuantity({ id: item.id, change: 1 });
     },
@@ -114,8 +128,32 @@ export default {
     removeItem(item) {
       this.removeFromCart(item.id);
     },
-    updateCart() { }
+    updateCart() { },
+    applyCoupon() {
+      if (this.couponCode.trim() === '111') {
+        this.discountApplied = true;
+        this.showNotify('Coupon applied successfully.', 'success');
+      } else {
+        this.discountApplied = false;
+        this.showNotify('Invalid coupon code.', 'error');
+      }
+    },
+    showNotify(message, type) {
+      this.notify.message = message;
+      this.notify.type = type;
+      this.notify.show = true;
+      window.clearTimeout(this._notifyTimer);
+      this._notifyTimer = window.setTimeout(() => {
+        this.notify.show = false;
+      }, 2000);
+    }
   }
 
 };
 </script>
+
+<style scoped>
+.notify-wrapper {
+  position: relative;
+}
+</style>

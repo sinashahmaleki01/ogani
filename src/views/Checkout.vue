@@ -40,11 +40,10 @@
           </div>
 
           <label>Country</label>
-          <input
-            type="text"
-            v-model="form.country"
-            :class="{ error: errors.country }"
-          />
+          <select v-model="form.country" :class="{ error: errors.country }">
+            <option value="">Select country (optional)</option>
+            <option v-for="c in countries" :key="c" :value="c">{{ c }}</option>
+          </select>
           <span v-if="errors.country" class="error-message">{{ errors.country }}</span>
 
           <label>Address</label>
@@ -63,11 +62,10 @@
           />
 
           <label>Town / City</label>
-          <input
-            type="text"
-            v-model="form.city"
-            :class="{ error: errors.city }"
-          />
+          <select v-model="form.city" :class="{ error: errors.city }">
+            <option disabled value="">Select city</option>
+            <option v-for="ct in cities" :key="ct" :value="ct">{{ ct }}</option>
+          </select>
           <span v-if="errors.city" class="error-message">{{ errors.city }}</span>
 
           <label>Country / State</label>
@@ -107,35 +105,8 @@
             </div>
           </div>
 
-          <span class="checked">
-            <input type="checkbox" v-model="form.createAccount" />
-            Create an account?
-          </span>
-          <p>
-            Create an account by entering the information below. If you are a
-            returning customer please login at the top of the page
-          </p>
-
-          <label v-if="form.createAccount">Account Password</label>
-          <input
-            v-if="form.createAccount"
-            type="text"
-            v-model="form.password"
-            :class="{ error: errors.password }"
-          />
-          <span
-            v-if="errors.password && form.createAccount"
-            class="error-message"
-            >{{ errors.password }}</span
-          >
-
-          <span class="checked">
-            <input type="checkbox" v-model="form.shipDifferent" />
-            Ship to a different address?
-          </span>
-
-          <label>Order notes</label>
-          <input type="text" v-model="form.notes" />
+          
+          <Validation ref="validator" :model="form" :rules="validationRules" @errors="errors = $event" />
         </form>
 
         <div class="billing-right">
@@ -174,12 +145,13 @@
 
 <script>
 import { mapState } from "vuex";
+import Validation from '@/components/validation.vue';
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 
 export default {
   name: "Checkout",
-  components: { Header, Footer },
+  components: { Header, Footer, Validation },
   data() {
     return {
       form: {
@@ -198,7 +170,45 @@ export default {
         shipDifferent: false,
         notes: ""
       },
-      errors: {}
+      errors: {},
+      validationRules: {
+        firstName: [
+          { required: true, message: 'First name is required.' },
+          { maxLen: 20, message: 'First name must be at most 20 characters.' }
+        ],
+        lastName: [
+          { required: true, message: 'Last name is required.' },
+          { maxLen: 20, message: 'Last name must be at most 20 characters.' }
+        ],
+        country: [
+          { validator: (v, m) => (String(v || '').trim() === '' || ['Iran','America','China','Russia'].includes(String(v))), message: 'Country must be Iran, America, China or Russia.' }
+        ],
+        address: [{ required: true, message: 'Address is required.' }],
+        city: [
+          { required: true, message: 'City is required.' },
+          { validator: (v, m) => ['Tehran','New York','Beijing','Moscow'].includes(String(v)), message: 'City must be Tehran, New York, Beijing or Moscow.' }
+        ],
+        state: [{ required: true, message: 'State is required.' }],
+        zip: [
+          { required: true, message: 'ZIP is required.' },
+          { pattern: /^\d+$/, message: 'Valid ZIP code required.' }
+        ],
+        phone: [
+          { required: true, message: 'Phone is required.' },
+          { pattern: /^\d{11}$/, message: 'Phone number must be exactly 11 digits.' }
+        ],
+        email: [
+          { required: true, message: 'Email is required.' },
+          { type: 'email', message: 'Valid email required.' }
+        ],
+        password: [
+          { required: true, when: m => m.createAccount, message: 'Password is required.' },
+          { minLen: 6, when: m => m.createAccount, message: 'Minimum length is 6.' }
+        ]
+      }
+      ,
+      countries: ['Iran','America','China','Russia'],
+      cities: ['Tehran','New York','Beijing','Moscow']
     };
   },
   computed: {
@@ -222,45 +232,29 @@ export default {
       return `$${value.toFixed(2)}`;
     },
     validateForm() {
-      this.errors = {};
-      if (!this.form.firstName.trim()) {
-        this.errors.firstName = "First name is required.";
+      if (this.$refs && this.$refs.validator && this.$refs.validator.validate) {
+        const ok = this.$refs.validator.validate();
+        if (this.$refs.validator.currentErrors) {
+          this.errors = { ...this.$refs.validator.currentErrors };
+        }
+        return !!ok;
       }
-      if (!this.form.lastName.trim()) {
-        this.errors.lastName = "Last name is required.";
-      }
-      if (!this.form.country.trim()) {
-        this.errors.country = "Country is required.";
-      }
-      if (!this.form.address.trim()) {
-        this.errors.address = "Address is required.";
-      }
-      if (!this.form.city.trim()) {
-        this.errors.city = "City is required.";
-      }
-      if (!this.form.state.trim()) {
-        this.errors.state = "State is required.";
-      }
-      if (!this.form.zip.trim() || !/^[0-9]+$/.test(this.form.zip)) {
-        this.errors.zip = "Valid ZIP code required.";
-      }
-      if (!this.form.phone.trim() || !/^[0-9\-\+\s]+$/.test(this.form.phone)) {
-        this.errors.phone = "Valid phone required.";
-      }
-      if (
-        !this.form.email.trim() ||
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.email)
-      ) {
-        this.errors.email = "Valid email required.";
-      }
-      if (this.form.createAccount && !this.form.password.trim()) {
-        this.errors.password = "Password is required.";
-      }
-      return Object.keys(this.errors).length === 0;
+      return true;
     },
+   
     placeOrder() {
-      if (!this.validateForm()) return;
-    
+      console.log('Place order clicked');
+      const ok = this.validateForm();
+      console.log('Validation result:', ok);
+      console.log('Current errors:', this.errors);
+      if (!ok) {
+        console.log('Validation failed, not navigating');
+        return;
+      }
+      console.log('Validation passed, navigating to CallBank');
+      this.$nextTick(() => {
+        this.$router.push('/CallBank');
+      });
     }
   }
 };

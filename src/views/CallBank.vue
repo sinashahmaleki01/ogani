@@ -30,6 +30,7 @@
 <script>
 import Footer from '@/components/Footer.vue';
 import Header from '@/components/Header.vue';
+import { mapMutations } from 'vuex';
 
 
 export default {
@@ -37,6 +38,13 @@ export default {
     components: {
         Header,
         Footer
+    },
+    methods: {
+        ...mapMutations(['clearCart'])
+    },
+    mounted() {
+        // Clear cart after successful purchase so header icon resets
+        this.clearCart();
     }
 }
 

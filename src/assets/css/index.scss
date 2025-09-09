@@ -149,7 +149,7 @@ a {
 }
 
 .section-title {
-    padding-bottom: 10px;
+    padding-bottom: 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1857,4 +1857,66 @@ main.callbank-page {
     .txt-s {
         font-size: 14px;
     }
+}
+
+.category-rotating-item {
+    transition: opacity 320ms ease;
+}
+
+.fade-out {
+    opacity: 0;
+}
+
+.fade-in {
+    opacity: 1;
+}
+
+.notify {
+    widows: 50px;
+    height: 50px;
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    padding: 8px 12px;
+    text-align: center;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 9999;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.notify-success {
+    background: $color-green;
+}
+
+.notify-error {
+    background: #e53637;
+}
+
+/* Slide-in/out animation */
+.notify-slide-enter-active,
+.notify-slide-leave-active {
+    transition: transform 260ms ease, opacity 260ms ease;
+}
+
+.notify-slide-enter {
+    transform: translateY(120%);
+    opacity: 0;
+}
+
+.notify-slide-enter-to {
+    transform: translateY(0%);
+    opacity: 1;
+}
+
+.notify-slide-leave {
+    transform: translateY(0%);
+    opacity: 1;
+}
+
+.notify-slide-leave-to {
+    transform: translateY(120%);
+    opacity: 0;
 }
